@@ -31,9 +31,10 @@ tomorrow = today + 60*60*24
 exclude = paste('minutely', 'daily', 'alerts', 'flags', 'currently', sep = ',')
 
 ## Get weather from yesterday and predictions for today/tomorrow
-weatherYesterday = fromJSON(paste("https://api.forecast.io/forecast/" , api.key , '/' , lat , ',' , long,  ',' , yesterday, '?exclude=' , exclude, sep = ''))$hourly$data
-weatherToday = fromJSON(paste("https://api.forecast.io/forecast/" , api.key , '/' , lat , ',' , long, ',' , today,'?exclude=' , exclude, sep = ''))$hourly$data
 weatherTomorrow =  fromJSON(paste("https://api.forecast.io/forecast/" , api.key , '/' , lat , ',' , long, ',' , tomorrow,'?exclude=' , exclude, sep = ''))$hourly$data
+## Weather forecast for tomorrow may contain less columns, so subset yesterday's and today's weather by the columns present forecast
+weatherYesterday = fromJSON(paste("https://api.forecast.io/forecast/" , api.key , '/' , lat , ',' , long,  ',' , yesterday, '?exclude=' , exclude, sep = ''))$hourly$data[,names(weatherTomorrow)]
+weatherToday = fromJSON(paste("https://api.forecast.io/forecast/" , api.key , '/' , lat , ',' , long, ',' , today,'?exclude=' , exclude, sep = ''))$hourly$data[,names(weatherTomorrow)]
 weather = rbind(weatherYesterday, weatherToday, weatherTomorrow)
 
 
